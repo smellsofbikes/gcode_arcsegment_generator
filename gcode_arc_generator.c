@@ -9,7 +9,7 @@ void main(int argc, char *argv[])
   /* assume 0,0 is the center of the hole, generate G03 moves at radius R
      plus cutter offset D/2 */
 
-  float arc_radius, cutter_diameter;
+  float arc_radius, cutter_diameter, offset;
   char input_string[20];
   char switch_id[5];
   int c, switch_iterator;
@@ -27,7 +27,21 @@ void main(int argc, char *argv[])
   cutter_diameter = atof(buffer);
 
   printf("Calculating cut radius %f using cutter diameter %f\n", arc_radius, cutter_diameter);
-
-  if ((file = fopen("output.ngc", "w")) == 0)
+  offset = arc_radius + (cutter_diameter/2);
+  
+  if ((file = fopen("output.ngc", "w")) == NULL)
   {
-cut-n-paste screwed up.
+    printf("Failed to open output file, dumping output to screen\n");
+    printf("G0 X%f Y-%f\n", 0.0, offset);
+    printf("G03 X%f Y%f I%f J%f F100\n", offset, 0.0, 0.0, offset);
+    printf("G03 X%f Y%f I%f J%f\n", 0.0, offset, offset, 0.0);
+  }
+  else /* have opened file for output */
+  {
+    fprintf(file, "G0 X%f Y-%f\n", 0.0, offset);
+    fprintf(file, "G03 X%f Y%f I%f J%f F100\n", offset, 0.0, 0.0, offset);
+    fprintf(file, "G03 X%f Y%f I%f J%f\n", 0.0, offset, offset, 0.0);
+    fclose(file);
+  }
+  return 0;
+}
