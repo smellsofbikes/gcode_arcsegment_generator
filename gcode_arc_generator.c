@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <math.h>
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   /* assume 0,0 is the center of the hole, generate G03 moves at radius R
      plus cutter offset D/2 */
